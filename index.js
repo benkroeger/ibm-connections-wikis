@@ -12,15 +12,15 @@ var xml = require('./lib/xml-utils');
 
 // local variable definitions
 var xmlNS = {
-    atom: 'http://www.w3.org/2005/Atom',
-    snx: 'http://www.ibm.com/xmlns/prod/sn',
-    app: 'http://www.w3.org/2007/app',
-    openSearch: 'http://a9.com/-/spec/opensearch/1.1/',
-    ibmsc: 'http://www.ibm.com/search/content/2010',
-    td: 'urn:ibm.com/td',
-    thr: 'http://purl.org/syndication/thread/1.0',
-    fh: 'http://purl.org/syndication/history/1.0'
-  };
+  atom: 'http://www.w3.org/2005/Atom',
+  snx: 'http://www.ibm.com/xmlns/prod/sn',
+  app: 'http://www.w3.org/2007/app',
+  openSearch: 'http://a9.com/-/spec/opensearch/1.1/',
+  ibmsc: 'http://www.ibm.com/search/content/2010',
+  td: 'urn:ibm.com/td',
+  thr: 'http://purl.org/syndication/thread/1.0',
+  fh: 'http://purl.org/syndication/history/1.0'
+};
 
 // local function definition
 function getAuthPath(requestOptions) {
@@ -86,7 +86,7 @@ var responseParser = {
     if (_.isString(responseXML)) {
       responseXML = xml.parse(responseXML);
     }
-    
+
     var result = xml.serialize(responseXML)
       .replace('<?xml version="1.0" encoding="UTF-8"?>', '')
       .replace('<!DOCTYPE html>', '');
@@ -283,3 +283,4 @@ IbmConnectionsWikisService.prototype.getPageMedia = function(options) {
     });
 };
 
+module.exports = IbmConnectionsWikisService;
