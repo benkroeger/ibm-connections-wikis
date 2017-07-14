@@ -1,0 +1,10 @@
+{
+  "recommendations":  "http://www.ibm.com/xmlns/prod/sn/recommendations",
+  "comment":          "http://www.ibm.com/xmlns/prod/sn/comment",
+  "share":            "http://www.ibm.com/xmlns/prod/sn/share",
+  "collections":      "http://www.ibm.com/xmlns/prod/sn/collections",
+  "attachments":      "http://www.ibm.com/xmlns/prod/sn/attachments",
+  "versions":         "http://www.ibm.com/xmlns/prod/sn/versions",
+  "hit":              "http://www.ibm.com/xmlns/prod/sn/hit",
+  "anonymous_hit":    "http://www.ibm.com/xmlns/prod/sn/anonymous_hit"
+}

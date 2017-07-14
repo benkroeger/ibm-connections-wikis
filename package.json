@@ -1,0 +1,48 @@
+{
+  "name": "ibm-connections-wikis-service",
+  "version": "0.0.1",
+  "description": "An implementation for the IBM Connections Wiki API",
+  "license": "none",
+  "main": "lib/index.js",
+  "author": {
+    "name": "Benjamin Kroeger",
+    "email": "benjamin.kroeger@gmail.com"
+  },
+  "keywords": [
+    "ibm-connections-wikis-service",
+    "ibm",
+    "wikis",
+    "service"
+  ],
+  "repository": "bitbucket:gisag/ibm-connections-wikis-service",
+  "scripts": {
+    "coverage": "nyc npm run test-ava && nyc report --reporter=html",
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix",
+    "test": "ava --verbose"
+  },
+  "dependencies": {
+    "async": "2.4.0",
+    "lodash": "4.17.4",
+    "oniyi-http-client": "1.1.0",
+    "oniyi-http-plugin-credentials": "0.2.0",
+    "oniyi-http-plugin-format-url-template": "bitbucket:gisag/oniyi-http-plugin-format-url-template#6d75931",
+    "oniyi-logger": "1.0.0",
+    "oniyi-utils": "1.1.1",
+    "oniyi-utils-xml": "0.1.0"
+  },
+  "devDependencies": {
+    "ava": "0.18.1",
+    "babel-eslint": "7.1.1",
+    "dotenv": "4.0.0",
+    "eslint": "3.5.0",
+    "eslint-config-oniyi": "4.2.0",
+    "eslint-plugin-ava": "3.0.0",
+    "nock": "^9.0.13",
+    "nyc": "10.1.2"
+  },
+  "files": [
+    "index.js",
+    "lib"
+  ]
+}

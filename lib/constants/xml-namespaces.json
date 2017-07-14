@@ -1,0 +1,6 @@
+{
+  "atom": "http://www.w3.org/2005/Atom",
+  "snx": "http://www.ibm.com/xmlns/prod/sn",
+  "td": "urn:ibm.com/td",
+  "ca": "http://www.ibm.com/xmlns/prod/composite-applications/v1.0"
+}
