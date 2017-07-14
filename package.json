@@ -16,7 +16,7 @@
   ],
   "repository": "bitbucket:gisag/ibm-connections-wikis-service",
   "scripts": {
-    "coverage": "nyc npm run test-ava && nyc report --reporter=html",
+    "coverage": "nyc npm run test && nyc report --reporter=html",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
     "test": "ava --verbose"
