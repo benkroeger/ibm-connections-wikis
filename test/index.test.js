@@ -1,6 +1,8 @@
 'use strict';
 
 // node core modules
+const fs = require('fs');
+const path = require('path');
 
 // 3rd party modules
 const test = require('ava');
@@ -8,11 +10,13 @@ const _ = require('lodash');
 
 // internal modules
 const WikiSource = require('../lib');
+const { mockHttpRequests, cleanAll, writeNockCallsToFile, recordHttpRequests } = require('./helpers/http-mocking-utils');
 
 // configure dotenv
 require('dotenv').config();
 
 const { USER_CREDENTIALS: userCredentials } = process.env;
+const nockCallsExist = fs.existsSync(path.join(__dirname, 'helpers/nock-calls.js'));
 
 test.beforeEach((t) => {
   const auth = `Basic ${new Buffer(userCredentials).toString('base64')}`;
@@ -41,6 +45,21 @@ test.beforeEach((t) => {
     wikiCommentsMembers,
     wikiVersionsMembers,
   });
+});
+
+test.before(() => {
+  if (!nockCallsExist) {
+    recordHttpRequests();
+    return;
+  }
+  mockHttpRequests();
+});
+
+test.after(() => {
+  if (!nockCallsExist) {
+    writeNockCallsToFile();
+  }
+  cleanAll();
 });
 
 /* Successful scenarios validations */
