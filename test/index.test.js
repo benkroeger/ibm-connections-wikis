@@ -85,29 +85,6 @@ test.cb('validate retrieving wiki navigation feed, wikiLabel provided', (t) => {
   });
 });
 
-test.cb('validate retrieving wiki navigation feed, wikiLabel & pageLabel provided', (t) => {
-  const { source } = t.context;
-  const params = {
-    authType: 'basic',
-    wikiLabel: '2feb2356-ab0f-458d-8a27-334363d9d192',
-    pageLabel: '0f8ee02f-0bcb-435a-859c-857845cd9d78',
-  };
-
-  source.feeds.navigationFeed(params, (err, response) => {
-    t.true(_.isNull(err));
-    t.true('navigationFeed' in response, `{navigationFeed} should be a member of ${response}`);
-
-    const { navigationFeed } = response;
-    t.true(_.isPlainObject(navigationFeed), `{navigationFeed} should be plain object, instead we got: [${typeof navigationFeed}]`);
-    t.true('items' in navigationFeed, `{items} should be a member of ${navigationFeed}`);
-
-    const { items } = navigationFeed;
-    t.true(_.isArray(items), `{items} should be an array, instead we got: [${typeof items}]`);
-    t.is(items.length, 9, `there should be exactly 9 items in ${items}`);
-    t.end();
-  });
-});
-
 test.cb('validate retrieving wiki page, wikiLabel & pageLabel provided', (t) => {
   const { source, wikiPageMembers } = t.context;
   const params = {
