@@ -139,9 +139,9 @@ source.feeds.pageArtifacts(requestParams, (err, response) => {
 
 In order to retrieve media content from a wiki page, or wiki version page, it is necessary to follow these steps:
 
-    - Call wikiPage() or pageVersion() API as explained in steps 2. and 3.
-    - Extract **content.src** from the response object
-    - Combine extracted **content** variable with current params
+   - Call wikiPage() or pageVersion() API as explained in steps 2. and 3.
+   - Extract ```content.src``` from the response object
+   - Combine extracted ```content``` variable with current params
 
 ```js
   const requestParams = {
