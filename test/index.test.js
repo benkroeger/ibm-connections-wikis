@@ -40,6 +40,7 @@ test.beforeEach((t) => {
   const source = new WikiSource('https://apps.na.collabserv.com/wikis/', serviceOptions);
   _.assign(t.context, {
     source,
+    serviceOptions,
     wikiPageMembers,
     wikiVersionPageMembers,
     wikiCommentsMembers,
@@ -63,6 +64,40 @@ test.after(() => {
 });
 
 /* Successful scenarios validations */
+
+// test.cb('validate providing format-url-template plugin options', (t) => {
+//   const { serviceOptions } = t.context;
+//   const requestOptions = {
+//     valuesMap: {
+//       authType: {
+//         oauth: 'asdf',
+//       },
+//     },
+//   };
+//   const params = {
+//     authType: 'oauth',
+//     wikiLabel: '434a24f4-28a2-45a4-b83a-a55120f1ca72',
+//   };
+//   const source = new WikiSource('https://apps.na.collabserv.com/wikis/', _.merge({}, requestOptions, serviceOptions));
+//
+//   source.feeds.navigationFeed(params, (err, response) => {
+//     t.true(_.isNull(err));
+//     console.log(response)
+//     console.log(err)
+//     // t.true('navigationFeed' in response, `{navigationFeed} should be a member of ${response}`);
+//     //
+//     // const { navigationFeed } = response;
+//     // t.true(_.isPlainObject(navigationFeed), `{navigationFeed} should be plain object, instead we got: [${typeof navigationFeed}]`);
+//     // t.true('items' in navigationFeed, `{items} should be a member of ${navigationFeed}`);
+//     //
+//     // const { items } = navigationFeed;
+//     // t.true(_.isArray(items), `{items} should be an array, instead we got: [${typeof items}]`);
+//     // t.is(items.length, 13, `there should be exactly 9 items in ${items}`);
+//     t.end();
+//   });
+//
+// });
+
 test.cb('validate retrieving wiki navigation feed, wikiLabel provided', (t) => {
   const { source } = t.context;
   const params = {
@@ -141,6 +176,7 @@ test.cb('validate retrieving all comments from wiki page, wikiLabel & pageLabel 
     t.true('pageComments' in response, `{pageComments} should be a member of ${response}`);
 
     const { pageComments } = response;
+
     t.true(_.isArray(pageComments), `{pageComments} should be an Array, instead we got: [${typeof pageComments}]`);
     pageComments.forEach((comment, i) => {
       wikiCommentsMembers.forEach((prop) => {
