@@ -18,16 +18,45 @@ const IbmConnectionsWikisService = require('ibm-connections-wikis-service');
 
 const defaults = {
   headers: {
-    Authorization: auth,
+    Authorization: 'Basic 12345', // or any other auth method
   },
 };
+```
+
+Beside default authorization, this service supports ```oniyi-http-plugin-credentials``` and ```oniyi-http-plugin-format-url-template```.
+**Credentials** plugin is used only if ```plugins.credentials``` is provided.
+**Format-url-template** is used by default, and it is recommended to use it in combination with **credentials** plugin.
+
+For more details about plugins usage, please visit:
+[oniyi-http-plugin-credentials](https://www.npmjs.com/package/oniyi-http-plugin-credentials)
+[oniyi-http-plugin-format-url-template](https://www.npmjs.com/package/oniyi-http-plugin-format-url-template)
+
+```js
+const plugins = {
+  credentials: {
+    providerName: 'customProvider',
+    userRelationProp: 'credentials',
+  },
+  formatUrlTemplate: {
+    valuesMap: {
+      authType: {
+        basic: 'customAuthType', 
+      }
+    },
+    applyToQueryString: true,
+  }
+};
+
 const serviceOptions = {
   defaults,
+  plugins,
   baseUrl: 'https://fake.base.url.com',
 };
 
 const source = new IbmConnectionsWikisService(serviceOptions.baseUrl, serviceOptions);
 ```
+
+If not, please provide you own authorization type directly into ```requestParams``` object as explained in service methods usage below.
 
 Once source instance is created, you are able to use next methods:
 ```
@@ -38,11 +67,11 @@ Once source instance is created, you are able to use next methods:
 5. source.feeds.mediaContent
 ```
 
-Every method comes with two arguments, ```params``` and ```callback```
+Every method comes with two arguments, ```requestParams``` and ```callback```
 
 #### 1. source.feeds.navigationFeed
 
-In order to retrieve wiki navigation tree, it is necessary to provide ```wikiLabel``` through ```params``` object.
+In order to retrieve wiki navigation tree, it is necessary to provide ```wikiLabel``` through ```requestParams``` object.
 
 ```js
 const requestParams = {
@@ -58,7 +87,7 @@ source.feeds.navigationFeed(requestParams, (err, response) => {
 
 #### 2. source.feeds.wikiPage
 
-If you require wiki page, simply provide ```wikiLabel``` and ```pageLabel``` to ```params``` object.
+If you require wiki page, simply provide ```wikiLabel``` and ```pageLabel``` to ```requestParams``` object.
 
 ```js
 const requestParams = {
@@ -76,7 +105,7 @@ source.feeds.wikiPage(requestParams, (err, response) => {
 #### 3. source.feeds.pageVersion
 
 Page version belongs to a wiki page. Every page have one initial version, and could have many more.
-Provide ```params``` with ```wikiLabel```, ```pageLabel``` and ```versionLabel``` in order to get info about certain version.
+Provide ```requestParams``` with ```wikiLabel```, ```pageLabel``` and ```versionLabel``` in order to get info about certain version.
 
 ```js
 const requestParams = {
@@ -141,7 +170,7 @@ In order to retrieve media content from a wiki page, or wiki version page, it is
 
    - Call wikiPage() or pageVersion() API as explained in steps 2. and 3.
    - Extract ```content.src``` from the response object
-   - Combine extracted ```content``` variable with current params
+   - Combine extracted ```content``` variable with current ```requestParams```
 
 ```js
   const requestParams = {
@@ -151,10 +180,30 @@ In order to retrieve media content from a wiki page, or wiki version page, it is
 
   source.feeds.wikiPage(requestParams, (err, response) => {
     const content = response.wikiPage.content.src;
-    source.feeds.mediaContent(_.assign({}, { content }, requestParams), (error, mediaData) => {
+    source.feeds.mediaContent(_.assign({ content }, requestParams), (error, mediaData) => {
       // use mediaData here
     });
   });
+
+```
+## Notes
+
+For the best performance and readability, it is recommended to use ```async``` module if creating connected API calls
+
+```js
+const async = require('async');
+
+// ... setup source instance
+
+async.waterfall([
+  (done) => source.feeds.wikiPage({}, done),
+  (response, done) => {
+  /* parse response here */
+  source.feeds.mediaContent({}, done);
+  },
+  //...
+  (err, result) => {/* parse result */ }
+]);
 
 ```
 
