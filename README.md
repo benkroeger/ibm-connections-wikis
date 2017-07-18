@@ -61,7 +61,6 @@ const source = new IbmConnectionsWikisService(serviceOptions.baseUrl, serviceOpt
 ```
 
 If not, please provide you own authorization type directly into ```requestParams``` object as explained in service methods usage below.
-
 Once source instance is created, you are able to use next methods:
 ```
 1. source.feeds.navigationFeed
@@ -193,7 +192,7 @@ In order to retrieve media content from a wiki page, or wiki version page, it is
 ```
 ## Notes
 
-For the best performance and readability, it is recommended to use ```async``` module if creating connected API calls
+For the best performance and readability, it is recommended to use ```async``` module if creating connected API calls.
 
 ```js
 const async = require('async');
