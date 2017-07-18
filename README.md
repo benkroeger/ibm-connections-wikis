@@ -24,11 +24,15 @@ const defaults = {
 ```
 
 Beside default authorization, this service supports ```oniyi-http-plugin-credentials``` and ```oniyi-http-plugin-format-url-template```.
+
 **Credentials** plugin is used only if ```plugins.credentials``` is provided.
+
 **Format-url-template** is used by default, and it is recommended to use it in combination with **credentials** plugin.
 
 For more details about plugins usage, please visit:
+
 [oniyi-http-plugin-credentials](https://www.npmjs.com/package/oniyi-http-plugin-credentials)
+
 [oniyi-http-plugin-format-url-template](https://www.npmjs.com/package/oniyi-http-plugin-format-url-template)
 
 ```js
@@ -76,6 +80,7 @@ In order to retrieve wiki navigation tree, it is necessary to provide ```wikiLab
 ```js
 const requestParams = {
   wikiLabel: '444a24f4-28a2-45a4-b21a-a55120f1ca72',
+  authType: 'oauth',
 };
 
 source.feeds.navigationFeed(requestParams, (err, response) => {
