@@ -187,7 +187,8 @@ test.cb('validate retrieving all versions from wiki page, wikiLabel, pageLabel a
 test.cb('validate retrieving wiki page "media content", "authType" provided', (t) => {
   const { source } = t.context;
   const params = {
-    authType: 'basic',
+    mediaAuthType: 'basic',
+    authType: 'oauth',
     wikiLabel: '2feb2356-ab0f-458d-8a27-334363d9d192',
     pageLabel: '0f8ee02f-0bcb-435a-859c-857845cd9d78',
   };
@@ -206,7 +207,8 @@ test.cb('validate retrieving wiki page "media content", "authType" provided', (t
 test.cb('validate retrieving wiki version page "media content", wikiLabel provided', (t) => {
   const { source } = t.context;
   const params = {
-    authType: 'basic',
+    mediaAuthType: 'basic',
+    authType: 'oauth',
     wikiLabel: '2feb2356-ab0f-458d-8a27-334363d9d192',
     pageLabel: '0f8ee02f-0bcb-435a-859c-857845cd9d78',
     versionLabel: 'db47be61-98e0-478f-8616-df6c4cd82a1d',
@@ -302,8 +304,8 @@ test.cb('error validation for retrieving wiki version page, versionLabel not pro
   };
 
   source.feeds.pageVersion(params, (err) => {
-    t.is(err.message, `Provided {{params.pageLabel}} : [true] and 
-      {{params.query.versionLabel}} : [false] should be equal to [true]`);
+    t.is(err.message, `Provided {{params.pageLabel}} : [${!!params.pageLabel}] and 
+      {{params.versionLabel}} : [${!!params.versionLabel}] should be equal to [true]`);
     t.is(err.httpStatus, 400);
     t.end();
   });
@@ -346,6 +348,7 @@ test.cb('error validation for retrieving all comments from wiki page, wrong page
 test.cb('error validation for retrieving wiki page "media content", wrong "authType" provided', (t) => {
   const { source } = t.context;
   const params = {
+    mediaAuthType: 'oauth',
     authType: 'oauth',
     wikiLabel: '2feb2356-ab0f-458d-8a27-334363d9d192',
     pageLabel: '0f8ee02f-0bcb-435a-859c-857845cd9d78',
@@ -364,6 +367,7 @@ test.cb('error validation for retrieving wiki page "media content", wrong "authT
 test.cb('error validation for not providing valid "uri" while fetching "wikiPage"', (t) => {
   const { source } = t.context;
   const params = {
+    mediaAuthType: 'basic',
     authType: 'oauth',
     wikiLabel: '2feb2356-ab0f-458d-8a27-334363d9d192',
     pageLabel: '0f8ee02f-0bcb-435a-859c-857845cd9d78',

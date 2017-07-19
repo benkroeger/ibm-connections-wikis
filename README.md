@@ -174,7 +174,8 @@ In order to retrieve media content from a wiki page, or wiki version page, it is
 
    - Call wikiPage() or pageVersion() API as explained in steps 2. and 3.
    - Extract ```content.src``` from the response object
-   - Combine extracted ```content``` variable with current ```requestParams```
+   - Provide default ```mediaAuthType```, which can be configurable by using **format-url-template** plugin
+   - Combine extracted ```content``` and ``mediaAuthType``` with the current ```requestParams```
 
 ```js
   const requestParams = {
@@ -183,13 +184,19 @@ In order to retrieve media content from a wiki page, or wiki version page, it is
   };
 
   source.feeds.wikiPage(requestParams, (err, response) => {
+    /* Handle error here */
     const content = response.wikiPage.content.src;
-    source.feeds.mediaContent(_.assign({ content }, requestParams), (error, mediaData) => {
+    source.feeds.mediaContent(_.assign({ content, mediaAuthType: 'oauth' }, requestParams), (error, mediaData) => {
       // use mediaData here
     });
   });
-
 ```
+Since ```mediaContent``` might require different authentication while making a request,this way we are making sure that 
+only ```mediaContent``` request is affected by any ```mediaAuthType``` mapping.
+ 
+If, however, we used regular ```authType``` template mechanism, this would lead to mapping all uris that support ```authType``` template
+in order to change only one single request (assuming that ```mediaContent``` requires different authentication from any other service method).
+
 ## Notes
 
 For the best performance and readability, it is recommended to use ```async``` module if creating connected API calls.
