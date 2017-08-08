@@ -63,26 +63,26 @@ const source = new IbmConnectionsWikisService(serviceOptions.baseUrl, serviceOpt
 If not, please provide you own authorization type directly into ```requestParams``` object as explained in service methods usage below.
 Once source instance is created, you are able to use next methods:
 ```
-1. source.feeds.navigationFeed
-2. source.feeds.wikiPage
-3. source.feeds.pageVersion
-4. source.feeds.pageArtifacts
-5. source.feeds.mediaContent
+1. source.navigationFeed
+2. source.wikiPage
+3. source.pageVersionDetails
+4. source.pageComments
+5. source.pageVersions
+6. source.mediaContent
 ```
 
 Every method comes with two arguments, ```requestParams``` and ```callback```
 
-#### 1. source.feeds.navigationFeed
+#### 1. source.navigationFeed
 
-In order to retrieve wiki navigation tree, it is necessary to provide ```wikiLabel``` through ```requestParams``` object.
+In order to retrieve wiki navigation tree, it is necessary to provide ```wikiLabel``` through ```query``` object.
 
 ```js
-const requestParams = {
+const query = {
   wikiLabel: '444a24f4-28a2-45a4-b21a-a55120f1ca72',
-  authType: 'oauth',
 };
 
-source.feeds.navigationFeed(requestParams, (err, response) => {
+source.navigationFeed(query, {/* request options param */}, (err, response) => {
   const { navigationFeed } = response;
   
   // use navigationFeed object to retrieve data about wiki navigation tree
@@ -91,37 +91,37 @@ source.feeds.navigationFeed(requestParams, (err, response) => {
 
 #### 2. source.feeds.wikiPage
 
-If you require wiki page, simply provide ```wikiLabel``` and ```pageLabel``` to ```requestParams``` object.
+If you require wiki page, simply provide ```wikiLabel``` and ```pageLabel``` to ```query``` object.
 
 ```js
-const requestParams = {
+const query = {
   wikiLabel: '444a24f4-28a2-45a4-b21a-a55120f1ca72',
   pageLabel: '123a24f4-48a2-45a4-551a-a5fferq1ca66',
 };
 
-source.feeds.wikiPage(requestParams, (err, response) => {
+source.wikiPage(query, {/* request options param */}, (err, response) => {
   const { wikiPage } = response;
   
   // use wikiPage object to extract metadata about title, updated time, content, author, modifier etc.
 });
 ```
 
-#### 3. source.feeds.pageVersion
+#### 3. source.pageVersionDetails
 
 Page version belongs to a wiki page. Every page have one initial version, and could have many more.
 Provide ```requestParams``` with ```wikiLabel```, ```pageLabel``` and ```versionLabel``` in order to get info about certain version.
 
 ```js
-const requestParams = {
+const query = {
   wikiLabel: '444a24f4-28a2-45a4-b21a-a55120f1ca72',
   pageLabel: '123a24f4-48a2-45a4-551a-a5fferq1ca66',
   versionLabel: '3214a24f4-48a2-45a4-b21a-b5f4433ckl2',
 };
 
-source.feeds.pageVersion(requestParams, (err, response) => {
-  const { pageVersion } = response;
+source.pageVersionDetails(query, {/* request options param */}, (err, response) => {
+  const { pageVersionDetails } = response;
   
-  // use pageVersion object to extract metadata about this particular version
+  // use pageVersionDetails object to extract metadata about this particular version
 });
 ```
 Mapping between this service and an actual IBM Connections Wiki API:
@@ -134,59 +134,58 @@ pageId = pageLabel
 versionId = versionLabel
 ```
 
-#### 4. source.feeds.pageArtifacts
+#### 4. source.pageComments
 
-This is an API that, when called without query, returns feed of comments that belong to a wiki page.
+This is an API that returns feed of comments that belong to a wiki page.
 
 ```js
-const requestParams = {
+const query = {
   wikiLabel: '444a24f4-28a2-45a4-b21a-a55120f1ca72',
   pageLabel: '123a24f4-48a2-45a4-551a-a5fferq1ca66',
 };
 
-source.feeds.pageArtifacts(requestParams, (err, response) => {
+source.pageArtifacts(query, {/* request options param */}, (err, response) => {
   const { pageComments } = response;
   
-  // use pageComments Array get content and metadata of all comments with provided wikiLabel and pageLabel
+  // use pageComments Array get content and metadata of all comments for provided wikiLabel and pageLabel
 });
 ```
 
-If the same method was called with ```version``` category sent via query, it will return all versions that belong to the same page.
+#### 5. source.pageVersions
+
+This is an API that returns feed of versions that belong to a wiki page.
 ```js
-const requestParams = {
-  query: {
-    category: 'version',
-  },
+const query = {
   wikiLabel: '444a24f4-28a2-45a4-b21a-a55120f1ca72',
   pageLabel: '123a24f4-48a2-45a4-551a-a5fferq1ca66',
 };
 
-source.feeds.pageArtifacts(requestParams, (err, response) => {
+source.pageVersions(query, {/* request options param */}, (err, response) => {
   const { pageVersions } = response;
   
   // use pageVersions Array get content and metadata of all versions with provided wikiLabel and pageLabel
 });
 ```
 
-#### 5. source.feeds.mediaContent
+#### 6. source.mediaContent
 
 In order to retrieve media content from a wiki page, or wiki version page, it is necessary to follow these steps:
 
-   - Call wikiPage() or pageVersion() API as explained in steps 2. and 3.
+   - Call wikiPage() or pageVersionDetails() API as explained in steps 2. and 3.
    - Extract ```content.src``` from the response object
    - Provide default ```mediaAuthType```, which can be configurable by using **format-url-template** plugin
-   - Combine extracted ```content``` and ``mediaAuthType``` with the current ```requestParams```
+   - Combine extracted ```content``` and ```mediaAuthType``` through ```options``` param:
 
 ```js
-  const requestParams = {
+  const query = {
     wikiLabel: '2feb2356-ab0f-458d-8a27-334363d9d192',
     pageLabel: '0f8ee02f-0bcb-435a-859c-857845cd9d78',
   };
 
-  source.feeds.wikiPage(requestParams, (err, response) => {
+  source.wikiPage(query, {/* request options param */}, (err, response) => {
     /* Handle error here */
     const content = response.wikiPage.content.src;
-    source.feeds.mediaContent(_.assign({ content, mediaAuthType: 'oauth' }, requestParams), (error, mediaData) => {
+    source.mediaContent({/* query param */}, { content, mediaAuthType: 'oauth' }, (error, mediaData) => {
       // use mediaData here
     });
   });
@@ -207,10 +206,10 @@ const async = require('async');
 // ... setup source instance
 
 async.waterfall([
-  (done) => source.feeds.wikiPage({}, done),
+  (done) => source.wikiPage({/* query param */}, {/* request options param */}, done),
   (response, done) => {
   /* parse response here */
-  source.feeds.mediaContent({}, done);
+  source.mediaContent({/* query param */}, {/* request options param */}, done);
   },
   //...
   (err, result) => {/* parse result */ }
