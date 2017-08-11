@@ -9,7 +9,7 @@ const test = require('ava');
 const _ = require('lodash');
 
 // internal modules
-const WikiSource = require('../lib');
+const wikiService = require('../lib');
 const { mockHttpRequests, cleanAll, writeNockCallsToFile, recordHttpRequests } = require('./helpers/http-mocking-utils');
 
 // configure dotenv
@@ -37,9 +37,9 @@ test.beforeEach((t) => {
   const wikiCommentsMembers = [...baseMembers, 'language', 'deleteWithRecord'];
   const wikiVersionsMembers = [...baseMembers, 'label', 'summary', 'libraryId', 'documentUuid'];
 
-  const source = new WikiSource('https://apps.na.collabserv.com/wikis/', serviceOptions);
+  const service = wikiService('https://apps.na.collabserv.com/wikis/', serviceOptions);
   _.assign(t.context, {
-    source,
+    service,
     serviceOptions,
     wikiPageMembers,
     wikiVersionPageMembers,
@@ -66,15 +66,14 @@ test.after(() => {
 /* Successful scenarios validations */
 
 test.cb('validate retrieving wiki navigation feed, wikiLabel provided', (t) => {
-  const { source } = t.context;
+  const { service } = t.context;
   const query = {
     wikiLabel: '434a24f4-28a2-45a4-b83a-a55120f1ca72',
   };
   const options = {
     authType: 'basic',
   };
-
-  source.navigationFeed(query, options, (err, response) => {
+  service.navigationFeed(query, options, (err, response) => {
     t.ifError(err);
     t.true('navigationFeed' in response, `{navigationFeed} should be a member of ${response}`);
 
@@ -90,7 +89,7 @@ test.cb('validate retrieving wiki navigation feed, wikiLabel provided', (t) => {
 });
 
 test.cb('validate retrieving wiki page, wikiLabel & pageLabel provided', (t) => {
-  const { source, wikiPageMembers } = t.context;
+  const { service, wikiPageMembers } = t.context;
   const query = {
     wikiLabel: '2feb2356-ab0f-458d-8a27-334363d9d192',
     pageLabel: '0f8ee02f-0bcb-435a-859c-857845cd9d78',
@@ -99,7 +98,7 @@ test.cb('validate retrieving wiki page, wikiLabel & pageLabel provided', (t) => 
     authType: 'basic',
   };
 
-  source.wikiPage(query, options, (err, response) => {
+  service.wikiPage(query, options, (err, response) => {
     t.ifError(err);
     t.true('wikiPage' in response, `{wikiPage} should be a member of ${response}`);
 
@@ -113,7 +112,7 @@ test.cb('validate retrieving wiki page, wikiLabel & pageLabel provided', (t) => 
 });
 
 test.cb('validate retrieving wiki version page, wikiLabel, pageLabel & versionLabel provided', (t) => {
-  const { source, wikiVersionPageMembers } = t.context;
+  const { service, wikiVersionPageMembers } = t.context;
   const query = {
     wikiLabel: '2feb2356-ab0f-458d-8a27-334363d9d192',
     pageLabel: '0f8ee02f-0bcb-435a-859c-857845cd9d78',
@@ -123,7 +122,7 @@ test.cb('validate retrieving wiki version page, wikiLabel, pageLabel & versionLa
     authType: 'basic',
   };
 
-  source.pageVersionDetails(query, options, (err, response) => {
+  service.pageVersionDetails(query, options, (err, response) => {
     t.ifError(err);
     t.true('pageVersionDetails' in response, `{pageVersionDetails} should be a member of ${response}`);
 
@@ -137,7 +136,7 @@ test.cb('validate retrieving wiki version page, wikiLabel, pageLabel & versionLa
 });
 
 test.cb('validate retrieving all comments from wiki page, wikiLabel & pageLabel provided', (t) => {
-  const { source, wikiCommentsMembers } = t.context;
+  const { service, wikiCommentsMembers } = t.context;
 
   const query = {
     wikiLabel: '434a24f4-28a2-45a4-b83a-a55120f1ca72',
@@ -147,7 +146,7 @@ test.cb('validate retrieving all comments from wiki page, wikiLabel & pageLabel 
     authType: 'basic',
   };
 
-  source.pageComments(query, options, (err, response) => {
+  service.pageComments(query, options, (err, response) => {
     t.ifError(err);
     t.true('pageComments' in response, `{pageComments} should be a member of ${response}`);
 
@@ -166,7 +165,7 @@ test.cb('validate retrieving all comments from wiki page, wikiLabel & pageLabel 
 });
 
 test.cb('validate retrieving all versions from wiki page, wikiLabel, pageLabel and query.category provided', (t) => {
-  const { source, wikiVersionsMembers } = t.context;
+  const { service, wikiVersionsMembers } = t.context;
   const query = {
     wikiLabel: '434a24f4-28a2-45a4-b83a-a55120f1ca72',
     pageLabel: 'cfd4229d-9b2a-4845-b5f0-a3e530785eff',
@@ -175,7 +174,7 @@ test.cb('validate retrieving all versions from wiki page, wikiLabel, pageLabel a
     authType: 'basic',
   };
 
-  source.pageVersions(query, options, (err, response) => {
+  service.pageVersions(query, options, (err, response) => {
     t.ifError(err);
     t.true('pageVersions' in response, `{pageVersions} should be a member of ${response}`);
 
@@ -193,7 +192,7 @@ test.cb('validate retrieving all versions from wiki page, wikiLabel, pageLabel a
 });
 
 test.cb('validate retrieving wiki page "media content", "authType" provided', (t) => {
-  const { source } = t.context;
+  const { service } = t.context;
   const query = {
     wikiLabel: '2feb2356-ab0f-458d-8a27-334363d9d192',
     pageLabel: '0f8ee02f-0bcb-435a-859c-857845cd9d78',
@@ -202,9 +201,9 @@ test.cb('validate retrieving wiki page "media content", "authType" provided', (t
     authType: 'basic',
   };
 
-  source.wikiPage(query, options, (err, response) => {
+  service.wikiPage(query, options, (err, response) => {
     const content = response.wikiPage.content.src;
-    source.mediaContent({}, { content, mediaAuthType: 'basic' }, (err, response) => { // eslint-disable-line no-shadow
+    service.mediaContent({}, { content, mediaAuthType: 'basic' }, (err, response) => { // eslint-disable-line no-shadow
       t.ifError(err);
       t.true('mediaContent' in response, `{mediaContent} should be a member of ${response}`);
       t.true(_.isString(response.mediaContent), `{mediaContent} should be a String, instead we got: [${typeof mediaContent}]`);
@@ -214,7 +213,7 @@ test.cb('validate retrieving wiki page "media content", "authType" provided', (t
 });
 
 test.cb('validate retrieving wiki version page "media content", wikiLabel provided', (t) => {
-  const { source } = t.context;
+  const { service } = t.context;
   const query = {
     wikiLabel: '2feb2356-ab0f-458d-8a27-334363d9d192',
     pageLabel: '0f8ee02f-0bcb-435a-859c-857845cd9d78',
@@ -224,9 +223,9 @@ test.cb('validate retrieving wiki version page "media content", wikiLabel provid
     authType: 'basic',
   };
 
-  source.pageVersionDetails(query, options, (err, response) => {
+  service.pageVersionDetails(query, options, (err, response) => {
     const content = response.pageVersionDetails.content.src;
-    source.mediaContent({}, { content, mediaAuthType: 'basic' }, (err, response) => { // eslint-disable-line no-shadow
+    service.mediaContent({}, { content, mediaAuthType: 'basic' }, (err, response) => { // eslint-disable-line no-shadow
       t.ifError(err);
       t.true('mediaContent' in response, `{mediaContent} should be a member of ${response}`);
 
@@ -241,13 +240,13 @@ test.cb('validate retrieving wiki version page "media content", wikiLabel provid
 /* Error / Wrong input scenarios validations */
 
 test.cb('error validation for retrieving wiki navigation feed, "wikiLabel" not provided', (t) => {
-  const { source } = t.context;
+  const { service } = t.context;
   const query = {};
   const options = {
     authType: 'basic',
   };
 
-  source.navigationFeed(query, options, (err) => {
+  service.navigationFeed(query, options, (err) => {
     t.is(err.message, '{{query.wikiLabel}} must be defined in [navigationFeed] request');
     t.is(err.httpStatus, 404);
     t.end();
@@ -255,13 +254,13 @@ test.cb('error validation for retrieving wiki navigation feed, "wikiLabel" not p
 });
 
 test.cb('error validation for retrieving wiki page, "wikiLabel" not provided', (t) => {
-  const { source } = t.context;
+  const { service } = t.context;
   const query = {};
   const options = {
     authType: 'basic',
   };
 
-  source.wikiPage(query, options, (err) => {
+  service.wikiPage(query, options, (err) => {
     t.is(err.message, '{{query.wikiLabel}} must be defined in [wikiPage] request');
     t.is(err.httpStatus, 404);
     t.end();
@@ -269,7 +268,7 @@ test.cb('error validation for retrieving wiki page, "wikiLabel" not provided', (
 });
 
 test.cb('error validation for retrieving wiki page, pageLabel not provided', (t) => {
-  const { source } = t.context;
+  const { service } = t.context;
   const query = {
     wikiLabel: '434a24f4-28a2-45a4-b83a-a55120f1ca72',
   };
@@ -277,7 +276,7 @@ test.cb('error validation for retrieving wiki page, pageLabel not provided', (t)
     authType: 'basic',
   };
 
-  source.wikiPage(query, options, (err) => {
+  service.wikiPage(query, options, (err) => {
     t.is(err.message, '{{query.pageLabel}} must be defined in [wikiPage] request');
     t.is(err.httpStatus, 404);
     t.end();
@@ -285,7 +284,7 @@ test.cb('error validation for retrieving wiki page, pageLabel not provided', (t)
 });
 
 test.cb('error validation for retrieving wiki page, wrong wikiLabel provided', (t) => {
-  const { source } = t.context;
+  const { service } = t.context;
   const query = {
     wikiLabel: 'mock label',
     pageLabel: '0f8ee02f-0bcb-435a-859c-857845cd9d78',
@@ -294,7 +293,7 @@ test.cb('error validation for retrieving wiki page, wrong wikiLabel provided', (
     authType: 'basic',
   };
 
-  source.wikiPage(query, options, (err) => {
+  service.wikiPage(query, options, (err) => {
     t.is(err.message, `<?xml version="1.0" encoding="UTF-8"?><td:error xmlns:td="urn:ibm.com/td"><td:errorCode>ItemNotFound</td:errorCode><td:errorMessage>Item not found with id ${query.wikiLabel}</td:errorMessage></td:error>`);
     t.is(err.httpStatus, 404);
     t.end();
@@ -302,7 +301,7 @@ test.cb('error validation for retrieving wiki page, wrong wikiLabel provided', (
 });
 
 test.cb('error validation for retrieving wiki version page, versionLabel not provided', (t) => {
-  const { source } = t.context;
+  const { service } = t.context;
   const query = {
     wikiLabel: '2feb2356-ab0f-458d-8a27-334363d9d192',
     pageLabel: '0f8ee02f-0bcb-435a-859c-857845cd9d78',
@@ -311,7 +310,7 @@ test.cb('error validation for retrieving wiki version page, versionLabel not pro
     authType: 'basic',
   };
 
-  source.pageVersionDetails(query, options, (err) => {
+  service.pageVersionDetails(query, options, (err) => {
     t.is(err.message, '{{query.versionLabel}} must be defined in [pageVersionDetails] request');
     t.is(err.httpStatus, 404);
     t.end();
@@ -319,7 +318,7 @@ test.cb('error validation for retrieving wiki version page, versionLabel not pro
 });
 
 test.cb('error validation for retrieving wiki version page, wrong versionLabel provided', (t) => {
-  const { source } = t.context;
+  const { service } = t.context;
   const query = {
     wikiLabel: '2feb2356-ab0f-458d-8a27-334363d9d192',
     pageLabel: '0f8ee02f-0bcb-435a-859c-857845cd9d78',
@@ -329,7 +328,7 @@ test.cb('error validation for retrieving wiki version page, wrong versionLabel p
     authType: 'basic',
   };
 
-  source.pageVersionDetails(query, options, (err) => {
+  service.pageVersionDetails(query, options, (err) => {
     t.is(err.message, `<?xml version="1.0" encoding="UTF-8"?><td:error xmlns:td="urn:ibm.com/td"><td:errorCode>ItemNotFound</td:errorCode><td:errorMessage>The request parameter id : ${query.versionLabel} is invalid.</td:errorMessage></td:error>`);
     t.is(err.httpStatus, 404);
     t.end();
@@ -337,7 +336,7 @@ test.cb('error validation for retrieving wiki version page, wrong versionLabel p
 });
 
 test.cb('error validation for retrieving all comments from wiki page, wrong pageLabel provided', (t) => {
-  const { source } = t.context;
+  const { service } = t.context;
   const query = {
     wikiLabel: '434a24f4-28a2-45a4-b83a-a55120f1ca72',
     pageLabel: 'mock page label',
@@ -346,7 +345,7 @@ test.cb('error validation for retrieving all comments from wiki page, wrong page
     authType: 'basic',
   };
 
-  source.pageComments(query, options, (err) => {
+  service.pageComments(query, options, (err) => {
     t.is(err.message, `<?xml version="1.0" encoding="UTF-8"?><td:error xmlns:td="urn:ibm.com/td"><td:errorCode>ItemNotFound</td:errorCode><td:errorMessage>EJPVJ9220E: Unable to get the media with the label ${query.pageLabel} in the library with ID ${query.wikiLabel}.</td:errorMessage></td:error>`);
     t.is(err.httpStatus, 404);
     t.end();
@@ -354,7 +353,7 @@ test.cb('error validation for retrieving all comments from wiki page, wrong page
 });
 
 test.cb('error validation for retrieving wiki page "media content", wrong "mediaAuthType" provided', (t) => {
-  const { source } = t.context;
+  const { service } = t.context;
   const query = {
     wikiLabel: '2feb2356-ab0f-458d-8a27-334363d9d192',
     pageLabel: '0f8ee02f-0bcb-435a-859c-857845cd9d78',
@@ -363,9 +362,9 @@ test.cb('error validation for retrieving wiki page "media content", wrong "media
     authType: 'basic',
   };
 
-  source.wikiPage(query, options, (err, response) => {
+  service.wikiPage(query, options, (err, response) => {
     const content = response.wikiPage.content.src;
-    source.mediaContent({}, { content, mediaAuthType: 'oauth' }, (err, response) => { // eslint-disable-line no-shadow
+    service.mediaContent({}, { content, mediaAuthType: 'oauth' }, (err, response) => { // eslint-disable-line no-shadow
       const { mediaContent } = response;
       t.true(mediaContent.includes('<!DOCTYPE html'), '{mediaContent} should start with "<!DOCTYPE html"');
       t.end();
@@ -374,7 +373,7 @@ test.cb('error validation for retrieving wiki page "media content", wrong "media
 });
 
 test.cb('error validation for not providing valid "uri" through "content" data while fetching "wikiPage"', (t) => {
-  const { source } = t.context;
+  const { service } = t.context;
   const query = {
     wikiLabel: '2feb2356-ab0f-458d-8a27-334363d9d192',
     pageLabel: '0f8ee02f-0bcb-435a-859c-857845cd9d78',
@@ -383,9 +382,9 @@ test.cb('error validation for not providing valid "uri" through "content" data w
     authType: 'basic',
   };
 
-  source.wikiPage(query, options, (err) => {
+  service.wikiPage(query, options, (err) => {
     t.true(_.isNull(err));
-    source.mediaContent({}, { mediaAuthType: 'basic' }, (err) => { // eslint-disable-line no-shadow
+    service.mediaContent({}, { mediaAuthType: 'basic' }, (err) => { // eslint-disable-line no-shadow
       t.is(err.message, 'options.uri must be a string when using options.baseUrl');
       t.end();
     });
