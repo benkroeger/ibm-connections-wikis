@@ -1,48 +1,52 @@
 {
-  "name": "ibm-connections-wikis-service",
-  "version": "0.0.1",
-  "description": "An implementation for the IBM Connections Wiki API",
-  "license": "none",
+  "name": "ibm-connections-wikis",
+  "version": "1.0.0",
+  "description": "An implementation for the IBM Connections Wikis API",
+  "license": "MIT",
   "main": "lib/index.js",
-  "author": {
-    "name": "Benjamin Kroeger",
-    "email": "benjamin.kroeger@gmail.com"
-  },
+  "author": "Benjamin Kroeger <benjamin.kroeger@gmail.com>",
+  "contributors": [
+    "Andreja Jevtic <andrajevtic@gmail.com>"
+  ],
   "keywords": [
-    "ibm-connections-wikis-service",
+    "ibm-connections-wikis",
     "ibm",
     "wikis",
     "service"
   ],
-  "repository": "bitbucket:gisag/ibm-connections-wikis-service",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benkroeger/ibm-connections-wikis.git"
+  },
+  "bugs": {
+    "url": "https://github.com/benkroeger/ibm-connections-wikis/issues"
+  },
+  "homepage": "https://github.com/benkroeger/ibm-connections-wikis#readme",
   "scripts": {
     "coverage": "nyc npm run test && nyc report --reporter=html",
-    "lint": "eslint .",
-    "lint-fix": "eslint . --fix",
+    "lint": "eslint --ignore-path .gitignore .",
+    "lint-fix": "npm run lint -- --fix",
     "test": "ava --verbose"
   },
   "dependencies": {
-    "async": "2.4.0",
     "lodash": "4.17.4",
-    "oniyi-http-client": "1.1.0",
+    "oniyi-http-client": "1.1.1",
     "oniyi-http-plugin-credentials": "0.2.1",
-    "oniyi-http-plugin-format-url-template": "1.0.1",
-    "oniyi-logger": "1.0.0",
-    "oniyi-utils": "1.1.1",
+    "oniyi-http-plugin-format-url-template": "1.0.2",
     "oniyi-utils-xml": "1.1.0"
   },
   "devDependencies": {
-    "ava": "0.18.1",
-    "babel-eslint": "7.1.1",
-    "dotenv": "4.0.0",
-    "eslint": "3.5.0",
-    "eslint-config-oniyi": "4.2.0",
-    "eslint-plugin-ava": "3.0.0",
-    "nock": "9.0.13",
-    "nyc": "10.1.2"
+    "ava": "0.21.0",
+    "eslint": "4.4.1",
+    "eslint-config-oniyi": "4.5.0",
+    "eslint-plugin-ava": "4.2.1",
+    "nock": "9.0.14",
+    "nyc": "11.1.0"
   },
   "files": [
-    "index.js",
-    "lib"
-  ]
+    "lib/"
+  ],
+  "directories": {
+    "test": "test"
+  }
 }

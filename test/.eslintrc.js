@@ -3,6 +3,5 @@ module.exports = {
   plugins: [ 'ava' ],
   rules: {
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
-    'max-len': 'off',
   },
 };
