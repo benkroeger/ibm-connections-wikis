@@ -56,3 +56,6 @@ typings/
 
 # dotenv environment variables file
 .env
+
+# npm@5 unnecessary files
+package-lock.json
