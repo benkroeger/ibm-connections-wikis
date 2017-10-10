@@ -1,6 +1,6 @@
 {
   "name": "ibm-connections-wikis",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "An implementation for the IBM Connections Wikis API",
   "license": "MIT",
   "main": "lib/index.js",
