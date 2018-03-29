@@ -162,10 +162,11 @@ test.cb('validate retrieving all comments from wiki page, wikiLabel & pageLabel 
 
   service.pageComments(query, options, (err, response) => {
     t.ifError(err);
-    t.true('pageComments' in response, `{pageComments} should be a member of ${response}`);
+    t.true('entries' in response, `{entries} should be a member of ${response}`);
 
-    const { pageComments } = response;
+    const { entries: pageComments, totalResults } = response;
 
+    t.is(totalResults, 4);
     t.true(_.isArray(pageComments), `{pageComments} should be an Array, instead we got: [${typeof pageComments}]`);
     pageComments.forEach((comment, i) => {
       wikiCommentsMembers.forEach((prop) => {
@@ -196,9 +197,11 @@ test.cb('validate retrieving all versions from wiki page, wikiLabel, pageLabel a
 
   service.pageVersions(query, options, (err, response) => {
     t.ifError(err);
-    t.true('pageVersions' in response, `{pageVersions} should be a member of ${response}`);
+    t.true('entries' in response, `{entries} should be a member of ${response}`);
 
-    const { pageVersions } = response;
+    const { entries: pageVersions, totalResults } = response;
+
+    t.is(totalResults, 4);
     t.true(_.isArray(pageVersions), `{pageVersions} should be an Array, instead we got: [${typeof pageVersions}]`);
     pageVersions.forEach((comment, i) => {
       wikiVersionsMembers.forEach((prop) => {
