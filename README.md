@@ -1,3 +1,5 @@
+This project is continued [here](https://bitbucket.org/gisag/ibm-connections-wikis)
+
 #  IBM Connections Wikis Service
 
 > an implementation for the IBM Connections Wiki API
